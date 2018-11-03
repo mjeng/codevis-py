@@ -11,13 +11,13 @@ import math
 '''
 
 def draw(connections):
-    im_size = 1000
     g = nx.DiGraph()        # directed graph with self-loops
     num_nodes = len(connections)
     files = {}
     locations = {}
     stretch = {}
     nodes = [f.func_name for f in connections]
+    im_size = len(nodes) * 200
     font = ImageFont.truetype("arial.ttf", size=12)
 
     im = Image.new('RGB', (im_size, im_size), color="white")
