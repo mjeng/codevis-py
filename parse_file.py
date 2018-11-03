@@ -3,6 +3,7 @@ import json
 import re
 import utils
 import create_graph as cg
+from heapq import heappush, heappop
 
 class CallData:
 	def __init__(self,func_name,src_file,call_list,times_called):
@@ -28,11 +29,38 @@ class CallData:
 		self.times_called=tc
 
 
+
+
 def gh_link_entry(link):
-	dict = utils.get_filemap(link)
+	get_filemap_tuple=utils.get_filemap(link)
+	dict = get_filemap_tuple[0]
+	granularity=5
+
 	keys = list(dict.keys())
-	connections=create_graph(keys, dict)
-	return cg.draw(connections)
+	create_graph_ret_tuple=create_graph(keys, dict)
+
+	connections=create_graph_ret_tuple[0]
+	line_counts=create_graph_ret_tuple[1]
+	name_to_CD=create_graph_ret_tuple[2]
+
+	#call recursive func
+	if((granularity is not None) and granularity<=len(connections)):
+		connections=[(-1*get_function_weight(c,line_counts,name_to_CD),c) for c in connections]
+		heap=[]
+		for elem in connections:
+			heappush(heap,elem)
+		print(heap)
+		connections=heap[0:granularity]
+		connections=[elem[1]for elem in connections]
+	cg.draw(connections)
+	return connections
+
+
+def get_function_weight(single_cnct,lc,n2cd):#single connection, line_counts
+	if len(single_cnct.get_call_list())==0:
+		return lc[single_cnct.get_func_name()]
+	else:
+		return lc[single_cnct.get_func_name()] + sum([get_function_weight(n2cd[x],lc,n2cd) for x in single_cnct.get_call_list()])
 
 ########
 # file_list --> list of file ID's
@@ -41,6 +69,8 @@ def gh_link_entry(link):
 def create_graph(file_list,src_code_dict):
 	file_functions={} #dictionary of all file ID's to list of functions that shit has
 	all_functions={} #set of all functions
+	line_count={}# set of all functions mapped to their line counts
+	name_to_CD={}# dict of func name mapped to cd obj
 
 	#fills up file_functions. After this for loop, you get dict of src file names with list of funcs in it
 	for curr_file in file_list:
@@ -48,6 +78,7 @@ def create_graph(file_list,src_code_dict):
 		#after we get returned a list from above function call, we add to the set below
 		for elem in file_functions[curr_file]:
 			all_functions[elem]=0
+			line_count[elem]=0
 	#print(all_functions.keys())
 	# creates CallData objects for all funcs
 	call_data_objects=[]
@@ -66,17 +97,10 @@ def create_graph(file_list,src_code_dict):
 			#get to next def
 			while curr_src_split!=[] and curr_src_split !=[''] and curr_search not in curr_src_split[0]:
 				curr_src_split=curr_src_split[1:]
-			#if func=="run_once":
-				#print(curr_src_split[0])
 			curr_src_split=curr_src_split[1:]
 
-			if(func=="homepage"):
-				print(curr_src_split[0])
-
 			while curr_src_split !=[] and (curr_src_split[0]=='' or curr_src_split[0][0]==" "): #check if space is first char to make sure actually under def
-				#print(all_functions.keys())
-				if curr_search == "def run_once":
-					print(curr_src_split[0])
+				line_count[func]+=1
 				for funcs in all_functions:
 					funcs1=funcs+"("
 					if funcs1 in curr_src_split[0]:#can always make it like curr_search later
@@ -89,8 +113,9 @@ def create_graph(file_list,src_code_dict):
 
 	for o in call_data_objects:
 		o.set_times_called(all_functions[o.get_func_name()])
+		name_to_CD[o.get_func_name()]=o
 
-	return call_data_objects
+	return (call_data_objects,line_count,name_to_CD)
 
 #get passed in iterable of all lines in file
 def get_functions(file_string):
