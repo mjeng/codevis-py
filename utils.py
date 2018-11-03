@@ -52,6 +52,6 @@ def get_filemap(gh_link):
     filemap = {}
     for pyfile in pyfiles:
         link = getrawgh(pyfile)
-        filemap[pyfile] = requests.get(link).content
+        filemap[pyfile] = requests.get(link).content.decode('utf-8')
 
     return filemap
