@@ -31,9 +31,12 @@ def draw(connections):
     file_list = list(files.keys())
     x_spacing = {}
     for file in file_list:
-        x_spacing[file] = list(range(50, im_size - 50, int( (im_size - 100) / (len(files[file]) - 1))))
+        if (len(files[file]) == 0):
+            x_spacing[file] = [500]
+        else:
+            x_spacing[file] = list(range(100, im_size - 100, int( (im_size - 200) / (len(files[file]) - 1))))
         x_spacing[file].append(im_size - 100)
-    y_spacing = list(range(50, im_size - 50, int( (im_size - 100) / len(file_list))))
+    y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / len(file_list))))
 
     # draw file divisions
     for i in range(len(y_spacing) - 1):
@@ -63,7 +66,7 @@ def draw(connections):
         for dest in connections[i].call_list:
             start = connections[i].func_name
             draw_arrow(draw, locations[dest][0], locations[dest][1], locations[start][0], locations[start][1], 35 + stretch[connections[i].func_name])
-
+    #draw.arc((20, 40, 100, 500), 90, 270, 'black')
     nx.draw(g, with_labels=True, pos=locations, node_size=700)
     # plt.show()
     del draw
@@ -72,13 +75,30 @@ def draw(connections):
 def draw_circle(im, x, y, rad, label, times_called, font):
     stretch = len(label) * 1.2
     im.ellipse((x - rad - stretch - 1, y - rad - 1, x + rad + stretch + 1, y + rad + 1), fill=(0, 0, 0))
-    im.ellipse((x - rad - stretch, y - rad, x + rad + stretch, y + rad), fill=(255 - (20 * times_called), 255 - (20 * times_called), 255))
+    intensity = max(255 - (15 * times_called), 0)
+    im.ellipse((x - rad - stretch, y - rad, x + rad + stretch, y + rad), fill=(intensity, intensity, 255))
     len(label)
     im.text((x - (len(label) * 2.75), y - 5), label, font=font, fill="black")
     return stretch
 
 def draw_edge(im, x_1, y_1, x_2, y_2):
-    im.line(((x_1, y_1), (x_2, y_2)), fill="black", width=2)
+    if ((x_1 == x_2) and (y_1 == y_2)):
+        # recursive self-loop
+        im.arc((x_1 - 75, y_1 - 30, x_1 - 20, y_2 + 30), 30, 330, 'black')
+        im.arc((x_1 - 74, y_1 - 30, x_1 - 19, y_2 + 30), 30, 330, 'black')
+        # im.rectangle((x_1 - 70, y_1 - 30, x_1 - 30, y_2 + 30), outline="black")
+    elif (x_1 == x_2):
+        # same column
+        im.arc((x_1 - 80, min(y_1, y_2) + 20, x_1 + 20, max(y_1, y_2) - 20), 90, 270, 'black')
+        im.arc((x_1 - 79, min(y_1, y_2) + 20, x_1 + 19, max(y_1, y_2) - 20), 90, 270, 'black')
+        #im.rectangle((x_1 - 70, y_1, x_1, y_2), outline="black")
+    elif (y_1 == y_2):
+        # same row
+        im.arc((min(x_1, x_2) + 20, y_2 - 80, max(x_1, x_2) - 20, y_2 + 30), 180, 0, 'black')
+        im.arc((min(x_1, x_2) + 20, y_2 - 79, max(x_1, x_2) - 20, y_2 + 29), 180, 0, 'black')
+        # im.rectangle((x_1, y_1 - 10, x_2, y_2 - 60), outline="black")
+    else:
+        im.line(((x_1, y_1), (x_2, y_2)), fill="black", width=2)
 
 def draw_arrow(im, x_1, y_1, x_2, y_2, r):
     if ((x_1 == x_2) and (y_1 == y_2)):
@@ -90,11 +110,11 @@ def draw_arrow(im, x_1, y_1, x_2, y_2, r):
 
 
 def main():
-    t1 = parse_file.CallData("one", "f1", ["one", "two", "four"])
-    t2 = parse_file.CallData("two", "f1", ["three", "four"])
-    t5 = parse_file.CallData("five", "f1", ["two"])
-    t3 = parse_file.CallData("three", "f2", ["one"])
-    t4 = parse_file.CallData("four", "f2", ["one"])
+    t1 = parse_file.CallData("one", "f1", ["one", "two", "four"], 10)
+    t2 = parse_file.CallData("two", "f1", ["three", "four"], 7)
+    t5 = parse_file.CallData("five", "f1", ["two"], 4)
+    t3 = parse_file.CallData("three", "f2", ["one"], 2)
+    t4 = parse_file.CallData("four", "f2", ["one"], 1)
     test = [t1, t2, t3, t4, t5]
     draw(test)
 
