@@ -20,8 +20,12 @@ class CallData:
 	def set_call_list(cl):
 		self.call_list=cl
 
+########
+# file_list --> list of file ID's
+# src_code_dict --> dictionary of file ID's to the actual fat src code string
+#######
 def create_graph(file_list,src_code_dict):
-	file_functions={} #dictionary of all files to list of functions that shit has
+	file_functions={} #dictionary of all file ID's to list of functions that shit has
 	all_functions={} #set of all functions
 
 	#fills up file_functions. After this for loop, you get dict of src file names with list of funcs in it
