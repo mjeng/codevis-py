@@ -34,5 +34,5 @@ def index(request):
     return "true"
 
 if __name__ == "__main__":
-    app.run(debug=True, port=4040)
+    app.run()
 # run_itty(server='wsgiref', host='127.0.0.1', port=4040)
