@@ -18,7 +18,7 @@ def sendGetRequest(url):
 
 def sendPostRequest(url, data):
     my_headers = {"Accept" : "application/json", "Content-Type" : "application/json"}
-    request = Request(url, json.dumps(data), headers=my_headers)
+    request = Request(url, data=json.dumps(data).encode('utf-8'), headers=my_headers)
     request.add_header("Authorization", "Bearer " + BOT_BEARER)
     contents = urlopen(request).read()
     return contents
@@ -40,7 +40,7 @@ def index():
     result = json.loads(result)
     in_message = result.get('text', '').lower()
     print("[APP] in_message: {0}".format(in_message))
-    sendPostRequest("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": in_message})
+    # sendPostRequest("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": in_message})
     return "true"
 
 if __name__ == "__main__":
