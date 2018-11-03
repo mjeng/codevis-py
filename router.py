@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, abort
+from requests_toolbelt import MultipartEncoder
 import json
 import parse_file, webex
 
@@ -35,12 +36,19 @@ def webex_request():
         print(parse_file.gh_link_entry(query_url))
         # TODO put in error handling here - probably try-catch kinda deal
         out_message = "FUCK yea"
-        webex.sendPostRequest(SPARK_MESSAGES_URL, # TODO access config here
-            {
-                "roomId": webhook['data']['roomId'],
-                "text": out_message,
-                "files": ["https://i.redd.it/ho7von2212w11.jpg"]
-            })
+        # webex.sendPostRequest(SPARK_MESSAGES_URL, # TODO access config here
+        #     {
+        #         "roomId": webhook['data']['roomId'],
+        #         "text": out_message,
+        #         "files": ["https://i.redd.it/ho7von2212w11.jpg"]
+        #     })
+        fields = {
+            "roomId": webhook['data']['roomId'],
+            "text": out_message,
+            "files": ("visualize.png", open("test.png", 'rb'), "image/png")
+        }
+        headers = MultipartEncoder(fields=fields)
+        webex.sendPostRequest(SPARK_MESSAGES_URL, headers)
     return "true"
 
 if __name__ == "__main__":
