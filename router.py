@@ -9,7 +9,7 @@ def index():
     return render_template("homepage.html")
 
 # TODO move these to config vars
-BOT_BEARER = "ODc2YTBkN2MtNjlhYy00YmI1LWFiMjEtYWY3ZjZjZGViZTE3MmEzNDc5M2ItZTIx"
+BOT_EMAIL = "codevis@webex.bot"
 SPARK_MESSAGES_URL = "https://api.ciscospark.com/v1/messages/"
 
 @app.route("/webex", methods=["POST"])

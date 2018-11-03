@@ -1,7 +1,7 @@
 from urllib.request import Request, urlopen
 
 # TODO move these to config vars
-BOT_EMAIL = "codevis@webex.bot"
+BOT_BEARER = "ODc2YTBkN2MtNjlhYy00YmI1LWFiMjEtYWY3ZjZjZGViZTE3MmEzNDc5M2ItZTIx"
 BOT_NAME = "codevis"
 
 def sendGetRequest(url):
