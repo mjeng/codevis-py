@@ -6,4 +6,4 @@ testStr=["src1","src2"]
 fml = parse_file.create_graph(testStr,testDict)
 for elem in fml:
 	#print(elem.get_func_name()+" --> "+elem.get_call_list())
-	print (elem.get_func_name(),'-->',elem.get_call_list())
+	print (elem.get_func_name(),'-->',elem.get_times_called(),'-->',elem.get_call_list())
