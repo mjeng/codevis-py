@@ -20,12 +20,19 @@ def webex_request():
     if webhook['data']['personEmail'] != BOT_EMAIL: # TODO access config vars here
         request_json = webex.sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id']) # TODO access config vars here
         query_url = json.loads(request_json).get("text")
+        errmsg = {
+            "roomId": webhook['data']['roomId'],
+            "text": ""
+        }
         if query_url is None:
+            errmsg["text"] = "{0} takes in a Python GitHub URL".format(BOT_NAME)
+            webex.sendErrorMsg(SPARK_MESSAGES_URL, errmsg)
             abort(400, "No URL sent")
-
         try:
             im = parse_file.gh_link_entry(query_url)
         except AssertionError as e:
+            errmsg["text"] = "Input must be a valid Python GitHub URL"
+            webex.sendErrorMsg(SPARK_MESSAGES_URL, errmsg)
             abort(400, "Invalid URL")
 
         output = io.BytesIO()
