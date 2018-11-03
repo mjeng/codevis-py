@@ -32,7 +32,7 @@ def webex_request():
 
         output = io.BytesIO()
         im.save(output, format="PNG")
-        out_message = "Visualization of {0}".format(query_url[len(os.environ["BOT_NAME"])+1:])
+        out_message = "Visualization of {0}".format(query_url[len(os.environ["BOT_NAME"]):])
 
         fields = {
             "roomId": webhook['data']['roomId'],
