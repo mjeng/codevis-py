@@ -15,7 +15,9 @@ def draw(connections):
     num_nodes = len(connections)
     files = {}
     locations = {}
+    stretch = {}
     nodes = [f.func_name for f in connections]
+    font = ImageFont.truetype("arial.ttf", size=12)
 
     im = Image.new('RGB', (im_size, im_size), color="white")
     draw = ImageDraw.Draw(im)
@@ -33,98 +35,58 @@ def draw(connections):
         x_spacing[file].append(im_size - 100)
     y_spacing = list(range(50, im_size - 50, int( (im_size - 100) / len(file_list))))
 
+    # draw file divisions
+    for i in range(len(y_spacing) - 1):
+        chunk_mid = (y_spacing[i] + y_spacing[i + 1]) / 2
+        for j in range(1000):
+            if (j % 10 < 5):
+               draw.point((j, chunk_mid), fill="blue")
+    # get locations of nodes in (x, y) coordinates spread out across image
     for i in range(len(nodes)):
         node_index = files[connections[i].src_file].index(connections[i].func_name)
         node_x = x_spacing[connections[i].src_file][node_index]
         node_y = y_spacing[file_list.index(connections[i].src_file)]
         locations[connections[i].func_name] = (node_x, node_y)
         g.add_node(connections[i].func_name, pos=locations[connections[i].func_name])
-
+    # add the edges to the drawing based on saved (x,y) of each function
     for i in range(len(nodes)):
         for dest in connections[i].call_list:
             start = connections[i].func_name
             draw_edge(draw, locations[start][0], locations[start][1], locations[dest][0], locations[dest][1])
             g.add_edge(start, dest)
-            if(start != dest):
-                draw_arrow(draw, locations[dest][0], locations[dest][1], locations[start][0], locations[start][1])
-
+    # draw the nodes after drawing edges
     for i in range(len(nodes)):
         node = locations[connections[i].func_name]
-        draw_circle(draw, node[0], node[1], 30, connections[i].func_name, connections[i].times_called)
-
-    # edge_trace = go.Scatter(
-    #     x=[],
-    #     y=[],
-    #     line=dict(width=0.5,color='#888'),
-    #     hoverinfo='none',
-    #     mode='lines'
-    #     )
-
-    # for edge in g.edges():
-    #     x0, y0 = g.node[edge[0]]['pos']
-    #     x1, y1 = g.node[edge[1]]['pos']
-    #     edge_trace['x'] += tuple([x0, x1, None])
-    #     edge_trace['y'] += tuple([y0, y1, None])
-
-    # node_trace = go.Scatter(
-    # x=[],
-    # y=[],
-    # text=[],
-    # mode='markers',
-    # hoverinfo='text',
-    # marker=dict(
-    #     showscale=True,
-    #     colorscale='Earth',
-    #     reversescale=True,
-    #     color=[],
-    #     size=10,
-    #     colorbar=dict(
-    #         thickness=15,
-    #         title='Node Connections',
-    #         xanchor='left',
-    #         titleside='right'
-    #     ),
-    #     line=dict(width=2)))
-
-    # for node in g.nodes():
-    #     x, y = g.node[node]['pos']
-    #     node_trace['x'] += tuple([x])
-    #     node_trace['y'] += tuple([y])
-
-    # fig = go.Figure(data=[edge_trace, node_trace],
-    #     layout=go.Layout(
-    #         title='<br>Network graph made with Python',
-    #         titlefont=dict(size=16),
-    #         showlegend=False,
-    #         hovermode='closest',
-    #         margin=dict(b=20,l=5,r=5,t=40),
-    #         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-    #         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
-
-    # plotly.offline.plot(fig, filename='networkx')
+        stretch[connections[i].func_name] = draw_circle(draw, node[0], node[1], 30, connections[i].func_name, connections[i].times_called, font)
+    # draw the arrows on the edges
+    for i in range(len(nodes)):
+        for dest in connections[i].call_list:
+            start = connections[i].func_name
+            draw_arrow(draw, locations[dest][0], locations[dest][1], locations[start][0], locations[start][1], 35 + stretch[connections[i].func_name])
 
     nx.draw(g, with_labels=True, pos=locations, node_size=700)
-    plt.show()
+    # plt.show()
     del draw
     im.save("test.png", format="PNG")
 
-def draw_circle(im, x, y, rad, label, times_called):
-    if (times_called > 1):
-        print("MANY TIMES")
-        rad = rad * times_called
-        print(rad, label)
-    im.ellipse((x - rad - 1, y - rad - 1, x + rad + 1, y + rad + 1), fill=(0, 0, 0))
-    im.ellipse((x - rad, y - rad, x + rad, y + rad), fill=(255, 255, 255))
-    im.text((x - rad + 15, y - rad + 15), label, font=ImageFont.load_default(), fill="black")
+def draw_circle(im, x, y, rad, label, times_called, font):
+    stretch = len(label) * 1.2
+    im.ellipse((x - rad - stretch - 1, y - rad - 1, x + rad + stretch + 1, y + rad + 1), fill=(0, 0, 0))
+    im.ellipse((x - rad - stretch, y - rad, x + rad + stretch, y + rad), fill=(255 - (20 * times_called), 255 - (20 * times_called), 255))
+    len(label)
+    im.text((x - (len(label) * 2.75), y - 5), label, font=font, fill="black")
+    return stretch
 
 def draw_edge(im, x_1, y_1, x_2, y_2):
-    im.line(((x_1, y_1), (x_2, y_2)), fill="black", width=1)
+    im.line(((x_1, y_1), (x_2, y_2)), fill="black", width=2)
 
-def draw_arrow(im, x_1, y_1, x_2, y_2):
-   dist = ((x_1 - x_2)**2 + (y_1 - y_2)**2)**.5
-   x_a = x_1 - (35 * (x_1 - x_2) / dist)
-   y_a = y_1 - (35 * (y_1 - y_2) / dist)
-   im.ellipse((x_a - 5, y_a - 5, x_a + 5, y_a + 5), fill=(0, 0, 0))
+def draw_arrow(im, x_1, y_1, x_2, y_2, r):
+    if ((x_1 == x_2) and (y_1 == y_2)):
+        return
+    dist = ((x_1 - x_2)**2 + (y_1 - y_2)**2)**.5
+    x_a = x_1 - (r * (x_1 - x_2) / dist)
+    y_a = y_1 - (r * (y_1 - y_2) / dist)
+    im.ellipse((x_a - 5, y_a - 5, x_a + 5, y_a + 5), fill=(0, 0, 0))
 
 
 def main():
