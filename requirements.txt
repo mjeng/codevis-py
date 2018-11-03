@@ -1,6 +1,7 @@
 flask
 gunicorn
 requests
+bs4
 Pillow
 matplotlib
 networkx
