@@ -25,7 +25,7 @@ def sendPostRequest(url, data):
 
 @app.route("/", methods=["POST"])
 def index():
-    webhook = request.form
+    webhook = json.loads(request.data)
     print("############################################################")
     print("REQUEST.data: {0}".format(request.data))
     print("REQUEST: {0}".format(request))
