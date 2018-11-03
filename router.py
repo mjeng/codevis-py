@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, abort
 import json
 import parse_file, webex
 
@@ -24,10 +24,16 @@ def webex_request():
     # print("VALUES: {0}".format(request.values))
     # print("############################################################")
     if webhook['data']['personEmail'] != BOT_EMAIL: # TODO access config vars here
-        query_url = webex.sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id']) # TODO access config vars here
-        query_url = json.loads(query_url)
-        # TODO connector to ray's segment
+        request_json = webex.sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id']) # TODO access config vars here
+        query_url = json.loads(request_json).get("text")
+        if query_url is None:
+            print("[APP] BAD REQUEST")
+            abort(400, "No URL sent")
+            return "false"
+        print(query_url)
+        print(type(query_url))
         print(parse_file.gh_link_entry(query_url))
+        # TODO put in error handling here
         out_message = "success ?"
         webex.sendPostRequest(SPARK_MESSAGES_URL, # TODO access config here
             {
