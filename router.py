@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("formp.html")
+    return render_template("form.html")
 
 @app.route("/webex", methods=["POST"])
 def webex_request():
@@ -53,4 +53,4 @@ def form_submission():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
