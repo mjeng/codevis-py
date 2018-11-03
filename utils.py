@@ -30,8 +30,6 @@ def get_filemap(gh_link):
     user, repo = _parse_link(gh_link)
     print(user, repo)
     assert user is not None and repo is not None
-    # if user is None or repo is None:
-    #     return # TODO do some sort of error handling here
 
     getrawgh = lambda pyfile: GHRAW.format(user, repo, pyfile)
 
@@ -39,7 +37,7 @@ def get_filemap(gh_link):
         page = urlopen(GH.format(user, repo))
     except HTTPError:
         raise AssertionError
-        
+
     soup = BeautifulSoup(page, 'html.parser')
 
     filerows = soup.find_all("tr", "js-navigation-item")
@@ -53,6 +51,9 @@ def get_filemap(gh_link):
     for filename in filenames:
         if _is_py(filename):
             pyfiles.append(filename)
+
+    if len(pyfiles) == 0:
+        raise AssertionError
 
     filemap = {}
     for pyfile in pyfiles:
