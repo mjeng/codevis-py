@@ -19,13 +19,14 @@ def sendGetRequest(url):
 def sendPostRequest(url, data):
     my_headers = {"Accept" : "application/json", "Content-Type" : "application/json"}
     request = Request(url, json.dumps(data), headers=my_headers)
-    request.add_headers("Authorization", "Bearer " + BOT_BEARER)
+    request.add_header("Authorization", "Bearer " + BOT_BEARER)
     contents = urlopen(request).read()
     return contents
 
 @app.route("/", methods=["POST"])
-def index(request):
-    webhook = json.loads(request.body)
+def index():
+    webhook = request.form
+    # webhook = json.loads(request.form)
     print(webhook['data']['id'])
     result = sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id'])
     result = json.loads(result)
