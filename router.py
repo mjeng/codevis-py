@@ -29,7 +29,7 @@ def webex_request():
         try:
             im = parse_file.gh_link_entry(query_url)
         except AssertionError as e:
-            errmsg["text"] = "Input must be a valid Python GitHub URL"
+            errmsg["text"] = "Invalid input. Must be a valid Python GitHub URL and option (e.g. `-g=5`)."
             webex.sendErrorMsg(os.environ["SPARK_MESSAGES_URL"], errmsg)
             abort(400, "Invalid URL")
 
