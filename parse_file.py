@@ -32,11 +32,15 @@ class CallData:
 
 
 def gh_link_entry(link):
+<<<<<<< HEAD
 	get_filemap_tuple=utils.get_filemap(link)
 	dict = get_filemap_tuple[0]
 	granularity=get_filemap_tuple[1]
 	#granularity=5
 
+=======
+	dict, option = utils.get_filemap(link)
+>>>>>>> cc0cdc4b579c62eccd7e48f27590f16563ce50e7
 	keys = list(dict.keys())
 	create_graph_ret_tuple=create_graph(keys, dict)
 
