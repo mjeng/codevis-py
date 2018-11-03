@@ -1,30 +1,19 @@
 from flask import Flask, request, render_template
-from urllib.request import Request, urlopen
 import json
+import webex
 
 app = Flask(__name__)
 
+@app.route("/", methods=["GET"])
+def index():
+    return render_template("homepage.html")
+
+# TODO move these to config vars
 BOT_BEARER = "ODc2YTBkN2MtNjlhYy00YmI1LWFiMjEtYWY3ZjZjZGViZTE3MmEzNDc5M2ItZTIx"
 SPARK_MESSAGES_URL = "https://api.ciscospark.com/v1/messages/"
-BOT_EMAIL = "codevis@webex.bot"
-BOT_NAME = "codevis"
 
-def sendGetRequest(url):
-    my_headers = {"Accept" : "application/json", "Content-Type" : "application/json"}
-    request = Request(url, headers=my_headers)
-    request.add_header("Authorization", "Bearer " + BOT_BEARER)
-    contents = urlopen(request).read()
-    return contents
-
-def sendPostRequest(url, data):
-    my_headers = {"Accept" : "application/json", "Content-Type" : "application/json"}
-    request = Request(url, data=json.dumps(data).encode('utf-8'), headers=my_headers)
-    request.add_header("Authorization", "Bearer " + BOT_BEARER)
-    contents = urlopen(request).read()
-    return contents
-
-@app.route("/", methods=["POST"])
-def index():
+@app.route("/webex", methods=["POST"])
+def webex_request():
     webhook = json.loads(request.data)
     # print("############################################################")
     # print("REQUEST.data: {0}".format(request.data))
@@ -34,12 +23,12 @@ def index():
     # print("FILES: {0}".format(request.files))
     # print("VALUES: {0}".format(request.values))
     # print("############################################################")
-    if webhook['data']['personEmail'] != BOT_EMAIL:
-        print("[APP] {0}".format(webhook['data']['id']))
-        query_url = sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id'])
+    if webhook['data']['personEmail'] != BOT_EMAIL: # TODO access config vars here
+        query_url = webex.sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id']) # TODO access config vars here
         query_url = json.loads(query_url)
+        # TODO connector to ray's segment
         out_message = ""
-        sendPostRequest("https://api.ciscospark.com/v1/messages",
+        webex.sendPostRequest(SPARK_MESSAGES_URL, # TODO access config here
             {
                 "roomId": webhook['data']['roomId'],
                 "text": out_message,
