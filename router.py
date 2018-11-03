@@ -34,7 +34,7 @@ def webex_request():
         print(type(query_url))
         print(parse_file.gh_link_entry(query_url))
         # TODO put in error handling here - probably try-catch kinda deal
-        out_message = "success ?"
+        out_message = "FUCK yea"
         webex.sendPostRequest(SPARK_MESSAGES_URL, # TODO access config here
             {
                 "roomId": webhook['data']['roomId'],

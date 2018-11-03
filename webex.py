@@ -1,4 +1,5 @@
 from urllib.request import Request, urlopen
+import json
 
 # TODO move these to config vars
 BOT_BEARER = "ODc2YTBkN2MtNjlhYy00YmI1LWFiMjEtYWY3ZjZjZGViZTE3MmEzNDc5M2ItZTIx"
