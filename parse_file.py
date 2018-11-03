@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import utils
 
 class CallData:
 	def __init__(self,func_name,src_file,call_list,times_called):
@@ -25,6 +26,11 @@ class CallData:
 	def set_times_called(self,tc):
 		self.times_called=tc
 
+
+def gh_link_entry(link):
+	dict = utils.get_filemap(link)
+	keys=list(dict.keys())
+	return create_graph(keys,dict)
 ########
 # file_list --> list of file ID's
 # src_code_dict --> dictionary of file ID's to the actual fat src code string
@@ -67,7 +73,7 @@ def create_graph(file_list,src_code_dict):
 
 			call_data_objects.append(CallData(func,src_file,curr_call_list,0))
 
-	
+
 	for o in call_data_objects:
 		o.set_times_called(all_functions[o.get_func_name()])
 
