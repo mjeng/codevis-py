@@ -4,6 +4,7 @@ import json, io, os
 import parse_file, webex
 import parse_file
 from urllib.request import Request, urlopen
+from random import randint
 # from flask_pymongo import PyMongo
 
 app = Flask(__name__)
@@ -56,7 +57,8 @@ def form_submission():
         return render_template("form.html", error=e)
     filename = "static/images/graph.png"
     im.save(filename, format="PNG")
-    return render_template("form.html", path=filename)
+    passed_path = "{0}?{1}".format(filename, randint(1, 1000000))
+    return render_template("form.html", path=passed_path)
 
 if __name__ == "__main__":
     app.run(debug=True)

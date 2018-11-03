@@ -1,11 +1,21 @@
-{% if error %}
-	<script>alert({{ error }})</script>
-{% endif %}
-<form method="POST">
-    <p>GitHub URL: <input name="text"></p>
-    <input type="submit">
-</form>
-
-{% if path %}
-  <img width=50% height=auto src={{path}} href={{path}} target=_blank>
-{% endif %}
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+  </head>
+  <body>
+    {% if error %}
+    	<script>alert({{ error }})</script>
+    {% endif %}
+    <form method="POST">
+        <p>GitHub URL: <input name="text"></p>
+        <input type="submit">
+    </form>
+    <br>
+    {% if path %}
+      <img width=50% height=auto border=2 src={{path}} href={{path}} target=_blank>
+    {% endif %}
+  </body>
+</html>
