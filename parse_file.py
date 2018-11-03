@@ -7,11 +7,11 @@ class CallData:
 		self.func_name=func_name
 		self.src_file=src_file
 		self.call_list=call_list
-	def get_func_name:
+	def get_func_name(self):
 		return self.func_name
-	def get_src_file:
+	def get_src_file(self):
 		return self.src_file
-	def get_call_list:
+	def get_call_list(self):
 		return self.call_list
 	def set_func_name(f):
 		self.func_name=f
@@ -29,13 +29,14 @@ def create_graph(file_list):
 		file_functions[curr_file]=get_functions(curr_file)
 		for elem in file_functions[curr_file]:
 			all_functions[elem]=1
-
+	#print(file_list)
 	# creates CallData objects for all funcs
 	call_data_objects=[]
-	for src_file in file_funcions:
+	for src_file in file_functions:
+		#print(src_file)
 		curr_src_split=src_file.split("\n")#essentially makes raw file into lines of a txt file
 		curr_funcs=file_functions[src_file]
-
+		print(curr_src_split)
 		for func in curr_funcs:
 			curr_search="def "+func+":" #just in case u call this function above the def
 			curr_call_list=[]
@@ -45,18 +46,19 @@ def create_graph(file_list):
 				curr_src_split=curr_src_split[1:]
 			curr_src_split=curr_src_split[1:]
 
-			while curr_src_split[0][0]==" ": #check if space is first char to make sure actually under def
+			while curr_src_split !=[] and curr_src_split != [''] and curr_src_split[0][0]==" ": #check if space is first char to make sure actually under def
 				for funcs in all_functions:
 					if funcs in curr_src_split[0]:#can always make it like curr_search later
 						curr_call_list.append(funcs)#potentially could call same func multiple times. Maybe in future implement counter, and make arrow thi
 				curr_src_split=curr_src_split[1:]
 
 			call_data_objects.append(CallData(func,src_file,curr_call_list))
-			
 
-
-
+	return call_data_objects[0].get_call_list()
 #get passed in iterable of all lines in file
 def get_functions(file_string):
 	func_list = re.findall(r'def \w*:', file_string)
 	return [func_line[func_line.find(" ")+1:func_line.find(":")] for func_line in func_list]
+
+testStr=["def fuckMe:\n  sexy \ndef sexy:"]
+print(create_graph(testStr))
