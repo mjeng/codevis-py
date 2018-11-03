@@ -3,9 +3,6 @@ import networkx as nx
 from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 import sys
-import plotly.plotly as py
-import plotly
-import plotly.graph_objs as go
 from parse_file import CallData 
 
 '''
