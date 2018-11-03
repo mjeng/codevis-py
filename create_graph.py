@@ -34,7 +34,7 @@ def draw(connections):
         if (len(files[file]) == 0):
             x_spacing[file] = [500]
         else:
-            x_spacing[file] = list(range(100, im_size - 100, int( (im_size - 200) / (len(files[file]) - 1))))
+            x_spacing[file] = list(range(100, im_size - 100, int( (im_size - 200) / (len(files[file])))))
         x_spacing[file].append(im_size - 100)
     y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / len(file_list))))
 
