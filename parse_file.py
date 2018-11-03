@@ -3,22 +3,27 @@ import json
 import re
 
 class CallData:
-	def __init__(self,func_name,src_file,call_list):
+	def __init__(self,func_name,src_file,call_list,times_called):
 		self.func_name=func_name
 		self.src_file=src_file
 		self.call_list=call_list
+		self.times_called=times_called
 	def get_func_name(self):
 		return self.func_name
 	def get_src_file(self):
 		return self.src_file
 	def get_call_list(self):
 		return self.call_list
-	def set_func_name(f):
+	def get_times_called(self):
+		return self.times_called
+	def set_func_name(self,f):
 		self.func_name=f
-	def set_src_file(s):
+	def set_src_file(self,s):
 		self.src_file=s
-	def set_call_list(cl):
+	def set_call_list(self,cl):
 		self.call_list=cl
+	def set_times_called(self,tc):
+		self.times_called=tc
 
 ########
 # file_list --> list of file ID's
@@ -33,7 +38,7 @@ def create_graph(file_list,src_code_dict):
 		file_functions[curr_file]=get_functions(src_code_dict[curr_file])
 		#after we get returned a list from above function call, we add to the set below
 		for elem in file_functions[curr_file]:
-			all_functions[elem]=1
+			all_functions[elem]=0
 
 	# creates CallData objects for all funcs
 	call_data_objects=[]
@@ -57,11 +62,15 @@ def create_graph(file_list,src_code_dict):
 					funcs1=funcs+"("
 					if funcs1 in curr_src_split[0]:#can always make it like curr_search later
 						curr_call_list.append(funcs)#potentially could call same func multiple times. Maybe in future implement counter, and make arrow thi
+						all_functions[funcs]+=1
 				curr_src_split=curr_src_split[1:]
 
-			call_data_objects.append(CallData(func,src_file,curr_call_list))
+			call_data_objects.append(CallData(func,src_file,curr_call_list,0))
 
-	#return call_data_objects[0].get_call_list()
+	
+	for o in call_data_objects:
+		o.set_times_called(all_functions[o.get_func_name()])
+
 	return call_data_objects
 
 #get passed in iterable of all lines in file
