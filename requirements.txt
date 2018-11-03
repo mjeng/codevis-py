@@ -1,2 +1,5 @@
 flask
 gunicorn
+PIL
+matplotlib
+networkx
