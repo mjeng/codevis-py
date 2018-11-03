@@ -2,13 +2,15 @@ from flask import Flask, request, render_template, abort
 from requests_toolbelt import MultipartEncoder
 import json, io, os
 import parse_file, webex
+import parse_file
+from urllib.request import Request, urlopen
 # from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("homepage.html")
+    return render_template("formp.html")
 
 @app.route("/webex", methods=["POST"])
 def webex_request():
@@ -43,6 +45,12 @@ def webex_request():
         data = MultipartEncoder(fields=fields)
         webex.sendPostRequest(os.environ["SPARK_MESSAGES_URL"], data)
     return "true"
+
+@app.route("/", methods=['POST'])
+def form_submission():
+    url = request.form['text']
+    parse_file.gh_link_entry(url)
+
 
 if __name__ == "__main__":
     app.run()
