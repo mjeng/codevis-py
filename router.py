@@ -36,18 +36,16 @@ def index():
     # print("############################################################")
     if webhook['data']['personEmail'] != BOT_EMAIL:
         print("[APP] {0}".format(webhook['data']['id']))
-        result = sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id'])
-        result = json.loads(result)
-        in_message = result.get('text', '').lower()
-        print("[APP] in_message: {0}".format(in_message))
+        query_url = sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id'])
+        query_url = json.loads(query_url)
+        out_message = ""
         sendPostRequest("https://api.ciscospark.com/v1/messages",
             {
                 "roomId": webhook['data']['roomId'],
-                "text": in_message,
+                "text": out_message,
                 "files": ["https://i.redd.it/ho7von2212w11.jpg"]
             })
     return "true"
 
 if __name__ == "__main__":
     app.run()
-# run_itty(server='wsgiref', host='127.0.0.1', port=4040)
