@@ -17,17 +17,17 @@ def draw(connections):
     locations = {}
     stretch = {}
     nodes = [f.func_name for f in connections]
-    im_size = min(max(1000, 70*len(nodes)), 4000)
     font = ImageFont.truetype("arial.ttf", size=12)
-
-    im = Image.new('RGB', (im_size, im_size), color="white")
-    draw = ImageDraw.Draw(im)
 
     for i in range(len(connections)):
         if (connections[i].src_file in files):
             files[connections[i].src_file].append(connections[i].func_name)
         else:
             files[connections[i].src_file] = [connections[i].func_name]
+    im_size = max(len(files.keys()), max([len(lst) for lst in files.values()])
+
+    im = Image.new('RGB', (im_size, im_size), color="white")
+    draw = ImageDraw.Draw(im)
 
     file_list = list(files.keys())
     x_spacing = {}
