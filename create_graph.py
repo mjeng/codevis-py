@@ -39,20 +39,20 @@ def draw(connections):
             x_spacing[file].append(im_size - 100)
     if (len(files) == 1):
         y_spacing = [im_size / 2]
-    else:
+    else:   
         y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / (len(file_list) - 1))))
-        y_spacing.append(im_size - 100)
+        y_spacing.append(y_spacing[0])
 
     # draw file divisions and function names
     for i in range(len(y_spacing) - 1):
         chunk_mid = (y_spacing[i] + y_spacing[i + 1]) / 2
-        draw.text((im_size - 100, chunk_mid - 20), file_list[i], font=font, fill="black")
         for j in range(im_size):
             if (j % 10 < 5):
                draw.point((j, chunk_mid), fill="blue")
     draw.text((im_size - 100, im_size - 100), file_list[-1], font=font, fill="black")
     # get locations of nodes in (x, y) coordinates spread out across image
     for i in range(len(nodes)):
+        stretch[connections[i].func_name] = len(connections[i].func_name) * 1.2
         node_index = files[connections[i].src_file].index(connections[i].func_name)
         node_x = x_spacing[connections[i].src_file][node_index]
         node_y = y_spacing[file_list.index(connections[i].src_file)]
@@ -64,10 +64,6 @@ def draw(connections):
             start = connections[i].func_name
             draw_edge(draw, locations[start][0], locations[start][1], locations[dest][0], locations[dest][1])
             g.add_edge(start, dest)
-    # draw the nodes after drawing edges
-    for i in range(len(nodes)):
-        node = locations[connections[i].func_name]
-        stretch[connections[i].func_name] = draw_circle(draw, node[0], node[1], 30, connections[i].func_name, connections[i].times_called, font)
     # draw the arrows on the edges
     for i in range(len(nodes)):
         for dest in connections[i].call_list:
@@ -76,6 +72,14 @@ def draw(connections):
                 draw_arrow_arc(draw, locations[dest][0], locations[dest][1], locations[start][0], locations[start][1])
             else:
                 draw_arrow(draw, locations[dest][0], locations[dest][1], locations[start][0], locations[start][1], 35 + stretch[connections[i].func_name])
+    # draw the nodes after drawing edges
+    for i in range(len(nodes)):
+        node = locations[connections[i].func_name]
+        draw_circle(draw, node[0], node[1], 30, connections[i].func_name, connections[i].times_called, font, stretch[connections[i].func_name])
+
+    for i in range(len(y_spacing) - 1):
+        chunk_mid = (y_spacing[i] + y_spacing[i + 1]) / 2
+        draw.text((im_size - 100, chunk_mid - 20), file_list[i], font=font, fill="black")
     #draw.arc((20, 40, 100, 500), 90, 270, 'black')
     nx.draw(g, with_labels=True, pos=locations, node_size=700)
     # plt.show()
@@ -83,8 +87,7 @@ def draw(connections):
     im.save("test.png", format="PNG")
     return im
 
-def draw_circle(im, x, y, rad, label, times_called, font):
-    stretch = len(label) * 1.2
+def draw_circle(im, x, y, rad, label, times_called, font, stretch):
     im.ellipse((x - rad - stretch - 1, y - rad - 1, x + rad + stretch + 1, y + rad + 1), fill=(0, 0, 0))
     intensity = max(255 - (15 * times_called), 0)
     im.ellipse((x - rad - stretch, y - rad, x + rad + stretch, y + rad), fill=(intensity, intensity, 255))
@@ -118,7 +121,7 @@ def draw_arrow(im, x_1, y_1, x_2, y_2, r):
     x_a = x_1 - (r * (x_1 - x_2) / dist)
     y_a = y_1 - (r * (y_1 - y_2) / dist)
     t = math.tan(math.pi/6)
-    target = 500
+    target = 150
     x_a1 = ((x_a-x_2)*math.cos(t) - (y_a-y_2)*math.sin(t))
     y_a1 = ((y_a-y_2)*math.cos(t) + (x_a-x_2)*math.sin(t))
     d1 = x_a1**2 + y_a1**2
@@ -129,8 +132,8 @@ def draw_arrow(im, x_1, y_1, x_2, y_2, r):
     y_l = y_a - y_a1*((target/d1)**0.5)
     x_r = x_a - x_a2*((target/d2)**0.5)
     y_r = y_a - y_a2*((target/d2)**0.5)
-    im.line(((x_l, y_l), (x_a, y_a)), fill="red", width=3)
-    im.line(((x_r, y_r), (x_a, y_a)), fill="red", width=3)
+    im.line(((x_l, y_l), (x_a, y_a)), fill="black", width=3)
+    im.line(((x_r, y_r), (x_a, y_a)), fill="black", width=3)
 
 def draw_arrow_arc(im, x_1, y_1, x_2, y_2):
     #same column, also includes recursive and should route to left side
