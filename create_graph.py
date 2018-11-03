@@ -24,7 +24,7 @@ def draw(connections):
             files[connections[i].src_file].append(connections[i].func_name)
         else:
             files[connections[i].src_file] = [connections[i].func_name]
-    im_size = max(len(files.keys()), max([len(lst) for lst in files.values()]))
+    im_size = max(1000, len(files.keys()) * 100 , max([len(lst) for lst in files.values()]) * 80)
 
     im = Image.new('RGB', (im_size, im_size), color="white")
     draw = ImageDraw.Draw(im)
