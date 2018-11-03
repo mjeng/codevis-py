@@ -85,14 +85,17 @@ def draw_edge(im, x_1, y_1, x_2, y_2):
     if ((x_1 == x_2) and (y_1 == y_2)):
         # recursive self-loop
         im.arc((x_1 - 75, y_1 - 30, x_1 - 20, y_2 + 30), 30, 330, 'black')
+        im.arc((x_1 - 74, y_1 - 30, x_1 - 19, y_2 + 30), 30, 330, 'black')
         # im.rectangle((x_1 - 70, y_1 - 30, x_1 - 30, y_2 + 30), outline="black")
     elif (x_1 == x_2):
         # same column
-        im.arc((x_1 - 80, min(y_1 - 5, y_2 + 5), x_1, max(y_1 - 5, y_2 + 5)), 80, 280, 'black')
+        im.arc((x_1 - 80, min(y_1, y_2) + 20, x_1 + 20, max(y_1, y_2) - 20), 90, 270, 'black')
+        im.arc((x_1 - 79, min(y_1, y_2) + 20, x_1 + 19, max(y_1, y_2) - 20), 90, 270, 'black')
         #im.rectangle((x_1 - 70, y_1, x_1, y_2), outline="black")
     elif (y_1 == y_2):
         # same row
-        im.arc((min(x_1, x_2) + 5, y_2 - 60, max(x_1, x_2) + 5, y_2), 180, 0, 'black')
+        im.arc((min(x_1, x_2) + 20, y_2 - 80, max(x_1, x_2) - 20, y_2 + 30), 180, 0, 'black')
+        im.arc((min(x_1, x_2) + 20, y_2 - 79, max(x_1, x_2) - 20, y_2 + 29), 180, 0, 'black')
         # im.rectangle((x_1, y_1 - 10, x_2, y_2 - 60), outline="black")
     else:
         im.line(((x_1, y_1), (x_2, y_2)), fill="black", width=2)
