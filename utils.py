@@ -15,11 +15,9 @@ def _parse_link(gh_link):
 
     if m is None:
         m = re.search(GHREGEXERR, gh_link)
-        if m is not None:
-            return None, None
+        assert m is None
         m = re.search(GHREGEX2, gh_link)
-        if m is None:
-            return None, None
+        assert m is not None
 
     return m.group(1), m.group(2)
 
@@ -30,8 +28,9 @@ def get_filemap(gh_link):
 
     user, repo = _parse_link(gh_link)
     print(user, repo)
-    if user is None or repo is None:
-        return # TODO do some sort of error handling here
+    assert user is not None and repo is not None
+    # if user is None or repo is None:
+    #     return # TODO do some sort of error handling here
 
     getrawgh = lambda pyfile: GHRAW.format(user, repo, pyfile)
 

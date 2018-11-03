@@ -20,16 +20,17 @@ def webex_request():
         request_json = webex.sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id']) # TODO access config vars here
         query_url = json.loads(request_json).get("text")
         if query_url is None:
-            print("[APP] BAD REQUEST")
             abort(400, "No URL sent")
-            return "false"
-        print(query_url)
-        print(type(query_url))
-        # TODO put in error handling here - probably try-catch kinda deal
-        im = parse_file.gh_link_entry(query_url)
+
+        try:
+            im = parse_file.gh_link_entry(query_url)
+        except AssertionError as e:
+            abort(400, "Invalid URL")
+
         output = io.BytesIO()
         im.save(output, format="PNG")
-        out_message = "FUCK yea"
+        out_message = "Visualization of {0}".format(query_url)
+
         fields = {
             "roomId": webhook['data']['roomId'],
             "text": out_message,
