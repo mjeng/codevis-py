@@ -3,28 +3,14 @@ import networkx as nx
 from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 import sys
+import plotly.plotly as py
+import plotly
+import plotly.graph_objs as go
+from parse_file import CallData 
 
 '''
     input: connections = list of CallData objects
 '''
-
-class CallData:
-    def __init__(self,func_name,src_file,call_list):
-        self.func_name=func_name
-        self.src_file=src_file
-        self.call_list=call_list
-    def get_func_name(self):
-        return self.func_name
-    def get_src_file(self):
-        return self.src_file
-    def get_call_list(self):
-        return self.call_list
-    def set_func_name(f):
-        self.func_name=f
-    def set_src_file(s):
-        self.src_file=s
-    def set_call_list(cl):
-        self.call_list=cl
 
 def draw(connections):
     im_size = 1000
@@ -67,13 +53,69 @@ def draw(connections):
 
     for i in range(len(nodes)):
         node = locations[connections[i].func_name]
-        draw_circle(draw, node[0], node[1], 30, connections[i].func_name)
-    nx.draw(g, with_labels=True)
+        draw_circle(draw, node[0], node[1], 30, connections[i].func_name, connections[i].times_called)
+
+    # edge_trace = go.Scatter(
+    #     x=[],
+    #     y=[],
+    #     line=dict(width=0.5,color='#888'),
+    #     hoverinfo='none',
+    #     mode='lines'
+    #     )
+
+    # for edge in g.edges():
+    #     x0, y0 = g.node[edge[0]]['pos']
+    #     x1, y1 = g.node[edge[1]]['pos']
+    #     edge_trace['x'] += tuple([x0, x1, None])
+    #     edge_trace['y'] += tuple([y0, y1, None])
+
+    # node_trace = go.Scatter(
+    # x=[],
+    # y=[],
+    # text=[],
+    # mode='markers',
+    # hoverinfo='text',
+    # marker=dict(
+    #     showscale=True,
+    #     colorscale='Earth',
+    #     reversescale=True,
+    #     color=[],
+    #     size=10,
+    #     colorbar=dict(
+    #         thickness=15,
+    #         title='Node Connections',
+    #         xanchor='left',
+    #         titleside='right'
+    #     ),
+    #     line=dict(width=2)))
+
+    # for node in g.nodes():
+    #     x, y = g.node[node]['pos']
+    #     node_trace['x'] += tuple([x])
+    #     node_trace['y'] += tuple([y])
+
+    # fig = go.Figure(data=[edge_trace, node_trace],
+    #     layout=go.Layout(
+    #         title='<br>Network graph made with Python',
+    #         titlefont=dict(size=16),
+    #         showlegend=False,
+    #         hovermode='closest',
+    #         margin=dict(b=20,l=5,r=5,t=40),
+    #         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+    #         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
+
+    # plotly.offline.plot(fig, filename='networkx')
+
+    nx.draw(g, with_labels=True, pos=locations, node_size=700)
     plt.show()
     del draw
     im.save("test.png", format="PNG")
 
-def draw_circle(im, x, y, rad, label):
+def draw_circle(im, x, y, rad, label, times_called):
+    if (times_called > 1):
+        print("MANY TIMES")
+        rad = rad * times_called
+        print(rad, label)
     im.ellipse((x - rad - 1, y - rad - 1, x + rad + 1, y + rad + 1), fill=(0, 0, 0))
     im.ellipse((x - rad, y - rad, x + rad, y + rad), fill=(255, 255, 255))
     im.text((x - rad + 15, y - rad + 15), label, font=ImageFont.load_default(), fill="black")
