@@ -17,7 +17,7 @@ def draw(connections):
     locations = {}
     stretch = {}
     nodes = [f.func_name for f in connections]
-    im_size = min(1000, len(nodes* 100))
+    im_size = min(max(1000, 100*len(nodes)), 4000)
     font = ImageFont.truetype("arial.ttf", size=12)
 
     im = Image.new('RGB', (im_size, im_size), color="white")
