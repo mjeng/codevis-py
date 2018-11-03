@@ -31,19 +31,25 @@ def draw(connections):
     file_list = list(files.keys())
     x_spacing = {}
     for file in file_list:
-        if (len(files[file]) == 0):
+        if (len(files[file]) == 1):
             x_spacing[file] = [500]
         else:
             x_spacing[file] = list(range(100, im_size - 100, int( (im_size - 200) / (len(files[file]) - 1))))
-        x_spacing[file].append(im_size - 100)
-    y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / len(file_list))))
+        x_spacing[file].append(im_size - 200)
+    if (len(files) == 1):
+        y_spacing = [500]
+    else:
+        y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / (len(file_list) - 1))))
+        y_spacing.append(im_size - 200)
 
-    # draw file divisions
+    # draw file divisions and function names
     for i in range(len(y_spacing) - 1):
         chunk_mid = (y_spacing[i] + y_spacing[i + 1]) / 2
+        draw.text((900, chunk_mid - 20), file_list[i], font=font, fill="black")
         for j in range(1000):
             if (j % 10 < 5):
                draw.point((j, chunk_mid), fill="blue")
+    draw.text((900, 900), file_list[-1], font=font, fill="black")
     # get locations of nodes in (x, y) coordinates spread out across image
     for i in range(len(nodes)):
         node_index = files[connections[i].src_file].index(connections[i].func_name)
@@ -101,12 +107,8 @@ def draw_edge(im, x_1, y_1, x_2, y_2):
         im.line(((x_1, y_1), (x_2, y_2)), fill="black", width=2)
 
 def draw_arrow(im, x_1, y_1, x_2, y_2, r):
-    if ((x_1 == x_2) and (y_1 == y_2)):
-        return
-    dist = ((x_1 - x_2)**2 + (y_1 - y_2)**2)**.5
-    x_a = x_1 - (r * (x_1 - x_2) / dist)
-    y_a = y_1 - (r * (y_1 - y_2) / dist)
-    im.ellipse((x_a - 5, y_a - 5, x_a + 5, y_a + 5), fill=(0, 0, 0))
+    # alan here
+    return
 
 
 def main():
