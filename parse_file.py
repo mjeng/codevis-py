@@ -48,25 +48,35 @@ def create_graph(file_list,src_code_dict):
 		#after we get returned a list from above function call, we add to the set below
 		for elem in file_functions[curr_file]:
 			all_functions[elem]=0
-
+	#print(all_functions.keys())
 	# creates CallData objects for all funcs
 	call_data_objects=[]
 	for src_key in file_functions:
 		src_file=src_code_dict[src_key]
 		curr_src_split=src_file.split("\n")#essentially makes raw file into lines of a txt file
 		curr_funcs=file_functions[src_key]
+		#print(len(curr_src_split))
 		#print(curr_funcs)
+
 		for func in curr_funcs:
 			curr_search="def "+func #just in case u call this function above the def
-			#print (curr_search)
+
 			curr_call_list=[]
 
 			#get to next def
 			while curr_src_split!=[] and curr_src_split !=[''] and curr_search not in curr_src_split[0]:
 				curr_src_split=curr_src_split[1:]
+			#if func=="run_once":
+				#print(curr_src_split[0])
 			curr_src_split=curr_src_split[1:]
 
-			while curr_src_split[0]!='' and curr_src_split !=[] and curr_src_split != [''] and curr_src_split[0][0]==" ": #check if space is first char to make sure actually under def
+			if(func=="homepage"):
+				print(curr_src_split[0])
+
+			while curr_src_split !=[] and (curr_src_split[0]=='' or curr_src_split[0][0]==" "): #check if space is first char to make sure actually under def
+				#print(all_functions.keys())
+				if curr_search == "def run_once":
+					print(curr_src_split[0])
 				for funcs in all_functions:
 					funcs1=funcs+"("
 					if funcs1 in curr_src_split[0]:#can always make it like curr_search later
@@ -74,7 +84,7 @@ def create_graph(file_list,src_code_dict):
 						all_functions[funcs]+=1
 				curr_src_split=curr_src_split[1:]
 
-			call_data_objects.append(CallData(func,src_file,curr_call_list,0))
+			call_data_objects.append(CallData(func,src_key,curr_call_list,0))
 
 
 	for o in call_data_objects:
@@ -91,4 +101,7 @@ def get_functions(file_string):
 	for line in curr_src_split:
 		if line[0:3] == "def":
 			ret.append(line[line.find(" ")+1:line.find("(")])
+		if line[0:3] != "def" and ("def" in line):
+			ret.append(line[line.find("def")+4:line.find("(")])
+
 	return ret

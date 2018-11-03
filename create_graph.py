@@ -31,7 +31,7 @@ def draw(connections):
     file_list = list(files.keys())
     x_spacing = {}
     for file in file_list:
-        x_spacing[file] = list(range(50, im_size - 50, int( (im_size - 100) / (len(files[file]) - 1))))
+        x_spacing[file] = list(range(50, im_size - 50, int( (im_size - 100) / (len(files[file]) ))))
         x_spacing[file].append(im_size - 100)
     y_spacing = list(range(50, im_size - 50, int( (im_size - 100) / len(file_list))))
 
