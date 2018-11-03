@@ -20,22 +20,24 @@ class CallData:
 	def set_call_list(cl):
 		self.call_list=cl
 
-def create_graph(file_list):
+def create_graph(file_list,src_code_dict):
 	file_functions={} #dictionary of all files to list of functions that shit has
 	all_functions={} #set of all functions
 
 	#fills up file_functions. After this for loop, you get dict of src file names with list of funcs in it
 	for curr_file in file_list:
-		file_functions[curr_file]=get_functions(curr_file)
+		file_functions[curr_file]=get_functions(src_code_dict[curr_file])
+		#after we get returned a list from above function call, we add to the set below
 		for elem in file_functions[curr_file]:
 			all_functions[elem]=1
 	#print(file_list)
 	# creates CallData objects for all funcs
 	call_data_objects=[]
-	for src_file in file_functions:
+	for src_key in file_functions:
+		src_file=src_code_dict[src_key]
 		#print(src_file)
 		curr_src_split=src_file.split("\n")#essentially makes raw file into lines of a txt file
-		curr_funcs=file_functions[src_file]
+		curr_funcs=file_functions[src_key]
 		#print(curr_src_split)
 		for func in curr_funcs:
 			curr_search="def "+func+":" #just in case u call this function above the def
@@ -60,5 +62,6 @@ def get_functions(file_string):
 	func_list = re.findall(r'def \w*:', file_string)
 	return [func_line[func_line.find(" ")+1:func_line.find(":")] for func_line in func_list]
 
-testStr=["def a:\n  b() \n  c()\nc()\ndef b:\ndef c:"]
-print(create_graph(testStr))
+testDict={"src1":"def a:\n  b() \n  c()\nc()\ndef b:\ndef c:"}
+testStr=["src1"]
+print(create_graph(testStr,testDict))
