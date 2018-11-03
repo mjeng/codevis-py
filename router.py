@@ -26,11 +26,20 @@ def sendPostRequest(url, data):
 @app.route("/", methods=["POST"])
 def index():
     webhook = request.form
+    print("############################################################")
+    print("REQUEST.data: {0}".format(request.data))
+    print("REQUEST: {0}".format(request))
+    print("ARGS: {0}".format(request.args))
+    print("FORM: {0}".format(request.form))
+    print("FILES: {0}".format(request.files))
+    print("VALUES: {0}".format(request.values))
+    print("############################################################")
     # webhook = json.loads(request.form)
-    print(webhook['data']['id'])
+    print("[APP] {0}".format(webhook['data']['id']))
     result = sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id'])
     result = json.loads(result)
     in_message = result.get('text', '').lower()
+    print("[APP] in_message: {0}".format(in_message))
     sendPostRequest("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": in_message})
     return "true"
 
