@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, abort
 from requests_toolbelt import MultipartEncoder
 import json, io, os
 import parse_file, webex
-from flask_pymongo import PyMongo
+# from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 

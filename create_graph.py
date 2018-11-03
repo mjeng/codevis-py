@@ -72,12 +72,15 @@ def draw(connections):
     for i in range(len(nodes)):
         for dest in connections[i].call_list:
             start = connections[i].func_name
-            draw_arrow(draw, locations[dest][0], locations[dest][1], locations[start][0], locations[start][1], 35 + stretch[connections[i].func_name])
+            if ((locations[dest][0] == locations[start][0]) or (locations[dest][1] == locations[start][1])):
+                draw_arrow_arc(draw, locations[dest][0], locations[dest][1], locations[start][0], locations[start][1])
+            else:
+                draw_arrow(draw, locations[dest][0], locations[dest][1], locations[start][0], locations[start][1], 35 + stretch[connections[i].func_name])
     #draw.arc((20, 40, 100, 500), 90, 270, 'black')
     nx.draw(g, with_labels=True, pos=locations, node_size=700)
     # plt.show()
     del draw
-    # im.save("test.png", format="PNG")
+    im.save("test.png", format="PNG")
     return im
 
 def draw_circle(im, x, y, rad, label, times_called, font):
@@ -94,12 +97,12 @@ def draw_edge(im, x_1, y_1, x_2, y_2):
         # recursive self-loop
         im.arc((x_1 - 75, y_1 - 30, x_1 - 20, y_2 + 30), 30, 330, 'black')
         im.arc((x_1 - 74, y_1 - 30, x_1 - 19, y_2 + 30), 30, 330, 'black')
-        # im.rectangle((x_1 - 70, y_1 - 30, x_1 - 30, y_2 + 30), outline="black")
+        #im.rectangle((x_1 - 75, y_1 - 30, x_1 - 20, y_2 + 30), outline="black")
     elif (x_1 == x_2):
         # same column
         im.arc((x_1 - 80, min(y_1, y_2) + 20, x_1 + 20, max(y_1, y_2) - 20), 90, 270, 'black')
         im.arc((x_1 - 79, min(y_1, y_2) + 20, x_1 + 19, max(y_1, y_2) - 20), 90, 270, 'black')
-        #im.rectangle((x_1 - 70, y_1, x_1, y_2), outline="black")
+        #im.rectangle((x_1 - 80, min(y_1, y_2) + 20, x_1 + 20, max(y_1, y_2) - 20), outline="black")
     elif (y_1 == y_2):
         # same row
         im.arc((min(x_1, x_2) + 20, y_2 - 80, max(x_1, x_2) - 20, y_2 + 30), 180, 0, 'black')
@@ -115,7 +118,7 @@ def draw_arrow(im, x_1, y_1, x_2, y_2, r):
     x_a = x_1 - (r * (x_1 - x_2) / dist)
     y_a = y_1 - (r * (y_1 - y_2) / dist)
     t = math.tan(math.pi/6)
-    target = 250
+    target = 500
     x_a1 = ((x_a-x_2)*math.cos(t) - (y_a-y_2)*math.sin(t))
     y_a1 = ((y_a-y_2)*math.cos(t) + (x_a-x_2)*math.sin(t))
     d1 = x_a1**2 + y_a1**2
@@ -126,8 +129,21 @@ def draw_arrow(im, x_1, y_1, x_2, y_2, r):
     y_l = y_a - y_a1*((target/d1)**0.5)
     x_r = x_a - x_a2*((target/d2)**0.5)
     y_r = y_a - y_a2*((target/d2)**0.5)
-    im.line(((x_l, y_l), (x_a, y_a)), fill="red", width=2)
-    im.line(((x_r, y_r), (x_a, y_a)), fill="red", width=2)
+    im.line(((x_l, y_l), (x_a, y_a)), fill="red", width=3)
+    im.line(((x_r, y_r), (x_a, y_a)), fill="red", width=3)
+
+def draw_arrow_arc(im, x_1, y_1, x_2, y_2):
+    #same column, also includes recursive and should route to left side
+    if (x_1 == x_2 and y_1 == y_2):
+        draw_arrow(im, x_1 - 75, (y_1 + y_2)/2, x_1-75, y_2 + 30, 0)
+    elif (x_1 == x_2):
+        draw_arrow(im, x_1 - 80, (y_1 + y_2) / 2, x_1 - 80, max(y_1, y_2) - 20, 0)
+    else:
+        draw_arrow(im, (x_1 + x_2) / 2, y_2 - 80, max(x_1, x_2) - 20, y_2 - 80, 0)
+
+
+
+
 
 
 def main():
