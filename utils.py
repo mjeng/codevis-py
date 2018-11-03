@@ -7,29 +7,30 @@ import re, requests
 # we assume branch is master
 GH = "https://github.com/{0}/{1}/"
 GHRAW = "https://raw.githubusercontent.com/{0}/{1}/master/{2}"
-GHREGEX1 = "^.*?https://github.com/(.+?)/(.+?)/$"
-GHREGEXERR = "^.*?https://github.com/(.+?)/(.+?)/.+$"
-GHREGEX2 = "^.*?https://github.com/(.+?)/(.+?)$"
+GHREGEX1 = "^.*?https://github.com/(.+?)/(.+?)/(\s*?$|\s+?-g=(.*?)\s*?$)"
+GHREGEX2 = "^.*?https://github.com/(.+?)/(.+?)(\s*?$|\s+?-g=(.*?)\s*?$)"
+# GHREGEXERR = "^.*?https://github.com/(.+?)/(.+?)/.+$"
 
 def _parse_link(gh_link):
+
     m = re.search(GHREGEX1, gh_link)
 
     if m is None:
-        m = re.search(GHREGEXERR, gh_link)
-        assert m is None
         m = re.search(GHREGEX2, gh_link)
-        assert m is not None
 
-    return m.group(1), m.group(2)
+    assert m is not None
+
+    return m.group(1), m.group(2), m.group(4)
 
 def _is_py(filename):
     return len(filename) > 3 and filename[-3:] == ".py"
 
 def get_filemap(gh_link):
 
-    user, repo = _parse_link(gh_link)
-    print(user, repo)
+    user, repo, option = _parse_link(gh_link)
+    print(user, repo, option)
     assert user is not None and repo is not None
+    assert option is None or str.isdigit(option)
 
     getrawgh = lambda pyfile: GHRAW.format(user, repo, pyfile)
 
@@ -60,4 +61,4 @@ def get_filemap(gh_link):
         link = getrawgh(pyfile)
         filemap[pyfile] = requests.get(link).content.decode('utf-8')
 
-    return filemap
+    return filemap, option
