@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, abort
+from flask import Flask, request, render_template, abort, send_file
 from requests_toolbelt import MultipartEncoder
 import json, io, os
 import parse_file, webex
@@ -50,11 +50,13 @@ def webex_request():
 def form_submission():
     url = request.form['text']
     try:
-        res = parse_file.gh_link_entry(url)
+        im = parse_file.gh_link_entry(url)
     except AssertionError as e:
         # ("Invalid input. Must be a valid Python Github URL and option (e.g. '-g=5).")
         return render_template("form.html", error=e)
-
+    output = io.BytesIO()
+    im.save(output, format="PNG")
+    return send_file(output, attachment_filename="someimage.png", mimetype="image/png")
 
 if __name__ == "__main__":
     app.run(debug=True)
