@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+from urllib.error import HTTPError
 import re, requests
 
 # 0 --> user, 1 --> repo, 2 --> filename.py
@@ -34,7 +35,11 @@ def get_filemap(gh_link):
 
     getrawgh = lambda pyfile: GHRAW.format(user, repo, pyfile)
 
-    page = urlopen(GH.format(user, repo))
+    try:
+        page = urlopen(GH.format(user, repo))
+    except HTTPError:
+        raise AssertionError
+        
     soup = BeautifulSoup(page, 'html.parser')
 
     filerows = soup.find_all("tr", "js-navigation-item")

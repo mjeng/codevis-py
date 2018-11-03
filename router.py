@@ -11,6 +11,7 @@ def index():
 
 # TODO move these to config vars
 BOT_EMAIL = "codevis@webex.bot"
+BOT_NAME = "codevis"
 SPARK_MESSAGES_URL = "https://api.ciscospark.com/v1/messages/"
 
 @app.route("/webex", methods=["POST"])
@@ -29,7 +30,7 @@ def webex_request():
 
         output = io.BytesIO()
         im.save(output, format="PNG")
-        out_message = "Visualization of {0}".format(query_url)
+        out_message = "Visualization of {0}".format(query_url[len(BOT_NAME)+1:])
 
         fields = {
             "roomId": webhook['data']['roomId'],
