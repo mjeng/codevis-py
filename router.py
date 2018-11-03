@@ -42,6 +42,7 @@ def webex_request():
         #         "text": out_message,
         #         "files": ["https://i.redd.it/ho7von2212w11.jpg"]
         #     })
+        print("WEBHOOK: {0}".format(webhook['data']['roomId']))
         fields = {
             "roomId": webhook['data']['roomId'],
             "text": out_message,
