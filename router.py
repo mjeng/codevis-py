@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template
 import json
-import webex
+import parse_file, webex
 
 app = Flask(__name__)
 
@@ -27,7 +27,8 @@ def webex_request():
         query_url = webex.sendGetRequest(SPARK_MESSAGES_URL + webhook['data']['id']) # TODO access config vars here
         query_url = json.loads(query_url)
         # TODO connector to ray's segment
-        out_message = ""
+        print(parse_file.gh_link_entry(query_url))
+        out_message = "success ?"
         webex.sendPostRequest(SPARK_MESSAGES_URL, # TODO access config here
             {
                 "roomId": webhook['data']['roomId'],
