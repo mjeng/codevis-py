@@ -14,7 +14,7 @@ def sendGetRequest(url):
 
 def sendPostRequest(url, data):
     # my_headers = {"Accept" : "application/json", "Content-Type" : "application/json"}
-    my_headers = {"Accept" : "application/json", "Content-Type" : "multipart/form-data"}
+    my_headers = {"Accept" : "application/json", "Content-Type" : data.content_type}
     request = Request(url, data=data, headers=my_headers)
     # request = Request(url, data=json.dumps(data).encode('utf-8'), headers=my_headers)
     request.add_header("Authorization", "Bearer " + BOT_BEARER)

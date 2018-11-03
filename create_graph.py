@@ -67,7 +67,8 @@ def draw(connections):
     nx.draw(g, with_labels=True, pos=locations, node_size=700)
     # plt.show()
     del draw
-    im.save("test.png", format="PNG")
+    # im.save("test.png", format="PNG")
+    return im
 
 def draw_circle(im, x, y, rad, label, times_called, font):
     stretch = len(label) * 1.2

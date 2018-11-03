@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, abort
 from requests_toolbelt import MultipartEncoder
-import json
+import json, io
 import parse_file, webex
 
 app = Flask(__name__)
@@ -33,8 +33,10 @@ def webex_request():
             return "false"
         print(query_url)
         print(type(query_url))
-        print(parse_file.gh_link_entry(query_url))
         # TODO put in error handling here - probably try-catch kinda deal
+        im = parse_file.gh_link_entry(query_url)
+        output = io.BytesIO()
+        im.save(output, format="PNG")
         out_message = "FUCK yea"
         # webex.sendPostRequest(SPARK_MESSAGES_URL, # TODO access config here
         #     {
@@ -42,14 +44,14 @@ def webex_request():
         #         "text": out_message,
         #         "files": ["https://i.redd.it/ho7von2212w11.jpg"]
         #     })
-        print("WEBHOOK: {0}".format(webhook['data']['roomId']))
+        # print("WEBHOOK: {0}".format(webhook['data']['roomId']))
         fields = {
             "roomId": webhook['data']['roomId'],
             "text": out_message,
-            "files": ("visualize.png", open("test.png", 'rb'), "image/png")
+            "files": ("visualize.png", output, "image/png")
         }
-        headers = MultipartEncoder(fields=fields)
-        webex.sendPostRequest(SPARK_MESSAGES_URL, headers)
+        data = MultipartEncoder(fields=fields)
+        webex.sendPostRequest(SPARK_MESSAGES_URL, data)
     return "true"
 
 if __name__ == "__main__":
