@@ -49,7 +49,11 @@ def webex_request():
 @app.route("/", methods=['POST'])
 def form_submission():
     url = request.form['text']
-    parse_file.gh_link_entry(url)
+    try:
+        res = parse_file.gh_link_entry(url)
+    except AssertionError as e:
+        # ("Invalid input. Must be a valid Python Github URL and option (e.g. '-g=5).")
+        return render_template("form.html", error=e)
 
 
 if __name__ == "__main__":
