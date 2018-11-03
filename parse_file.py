@@ -2,6 +2,7 @@ import requests
 import json
 import re
 import utils
+import create_graph as cg
 
 class CallData:
 	def __init__(self,func_name,src_file,call_list,times_called):
@@ -30,7 +31,9 @@ class CallData:
 def gh_link_entry(link):
 	dict = utils.get_filemap(link)
 	keys=list(dict.keys())
-	return create_graph(keys,dict)
+	connections=create_graph(keys,dict)
+	cg.draw(connections)
+	return connections
 ########
 # file_list --> list of file ID's
 # src_code_dict --> dictionary of file ID's to the actual fat src code string

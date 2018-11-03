@@ -3,7 +3,7 @@ import networkx as nx
 from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 import sys
-from parse_file import CallData 
+import parse_file
 
 '''
     input: connections = list of CallData objects
@@ -128,11 +128,11 @@ def draw_arrow(im, x_1, y_1, x_2, y_2):
 
 
 def main():
-    t1 = CallData("one", "f1", ["one", "two", "four"])
-    t2 = CallData("two", "f1", ["three", "four"])
-    t5 = CallData("five", "f1", ["two"])
-    t3 = CallData("three", "f2", ["one"])
-    t4 = CallData("four", "f2", ["one"])
+    t1 = parse_file.CallData("one", "f1", ["one", "two", "four"])
+    t2 = parse_file.CallData("two", "f1", ["three", "four"])
+    t5 = parse_file.CallData("five", "f1", ["two"])
+    t3 = parse_file.CallData("three", "f2", ["one"])
+    t4 = parse_file.CallData("four", "f2", ["one"])
     test = [t1, t2, t3, t4, t5]
     draw(test)
 
