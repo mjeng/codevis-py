@@ -54,9 +54,9 @@ def form_submission():
     except AssertionError as e:
         # ("Invalid input. Must be a valid Python Github URL and option (e.g. '-g=5).")
         return render_template("form.html", error=e)
-    output = io.BytesIO()
-    im.save(output, format="PNG")
-    return send_file(output, attachment_filename="someimage.png", mimetype="image/png")
+    filename = "static/images/graph.png"
+    im.save(filename, format="PNG")
+    return render_template("form.html", path=filename)
 
 if __name__ == "__main__":
     app.run(debug=True)
