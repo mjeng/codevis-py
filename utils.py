@@ -4,10 +4,11 @@ import re, requests
 
 # 0 --> user, 1 --> repo, 2 --> filename.py
 # we assume branch is master
+GH = "https://github.com/{0}/{1}/"
 GHRAW = "https://raw.githubusercontent.com/{0}/{1}/master/{2}"
-GHREGEX1 = "^https://github.com/(.+?)/(.+?)/$"
-GHREGEXERR = "^https://github.com/(.+?)/(.+?)/.+$"
-GHREGEX2 = "^https://github.com/(.+?)/(.+?)$"
+GHREGEX1 = "^.*?https://github.com/(.+?)/(.+?)/$"
+GHREGEXERR = "^.*?https://github.com/(.+?)/(.+?)/.+$"
+GHREGEX2 = "^.*?https://github.com/(.+?)/(.+?)$"
 
 def _parse_link(gh_link):
     m = re.search(GHREGEX1, gh_link)
@@ -34,7 +35,7 @@ def get_filemap(gh_link):
 
     getrawgh = lambda pyfile: GHRAW.format(user, repo, pyfile)
 
-    page = urlopen(gh_link)
+    page = urlopen(GH.format(user, repo))
     soup = BeautifulSoup(page, 'html.parser')
 
     filerows = soup.find_all("tr", "js-navigation-item")

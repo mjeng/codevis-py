@@ -33,7 +33,7 @@ def webex_request():
         print(query_url)
         print(type(query_url))
         print(parse_file.gh_link_entry(query_url))
-        # TODO put in error handling here
+        # TODO put in error handling here - probably try-catch kinda deal
         out_message = "success ?"
         webex.sendPostRequest(SPARK_MESSAGES_URL, # TODO access config here
             {
