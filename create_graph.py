@@ -33,12 +33,12 @@ def draw(connections):
     x_spacing = {}
     for file in file_list:
         if (len(files[file]) == 1):
-            x_spacing[file] = [500]
+            x_spacing[file] = [im_size / 2]
         else:
             x_spacing[file] = list(range(100, im_size - 100, int( (im_size - 200) / (len(files[file]) - 1))))
             x_spacing[file].append(im_size - 100)
     if (len(files) == 1):
-        y_spacing = [500]
+        y_spacing = [im_size / 2]
     else:
         y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / (len(file_list) - 1))))
         y_spacing.append(im_size - 100)
@@ -46,11 +46,11 @@ def draw(connections):
     # draw file divisions and function names
     for i in range(len(y_spacing) - 1):
         chunk_mid = (y_spacing[i] + y_spacing[i + 1]) / 2
-        draw.text((900, chunk_mid - 20), file_list[i], font=font, fill="black")
-        for j in range(1000):
+        draw.text((im_size - 100, chunk_mid - 20), file_list[i], font=font, fill="black")
+        for j in range(im_size):
             if (j % 10 < 5):
                draw.point((j, chunk_mid), fill="blue")
-    draw.text((900, 900), file_list[-1], font=font, fill="black")
+    draw.text((im_size - 100, im_size - 100), file_list[-1], font=font, fill="black")
     # get locations of nodes in (x, y) coordinates spread out across image
     for i in range(len(nodes)):
         node_index = files[connections[i].src_file].index(connections[i].func_name)
