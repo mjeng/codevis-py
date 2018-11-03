@@ -1,6 +1,7 @@
 flask
 gunicorn
 requests
+requests_toolbelt
 bs4
 Pillow
 matplotlib
