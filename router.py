@@ -40,7 +40,8 @@ def index():
         result = json.loads(result)
         in_message = result.get('text', '').lower()
         print("[APP] in_message: {0}".format(in_message))
-        sendPostRequest("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": in_message})
+        sendPostRequest("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": "This is a test image", "files":["https://i.redd.it/ho7von2212w11.jpg"})
+        #sendPostRequest("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": in_message})
     return "true"
 
 if __name__ == "__main__":
