@@ -39,7 +39,7 @@ def draw(connections):
             x_spacing[file].append(im_size - 100)
     if (len(files) == 1):
         y_spacing = [im_size / 2]
-    else:   
+    else:
         y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / (len(file_list) - 1))))
         y_spacing.append(y_spacing[0])
 
@@ -84,7 +84,7 @@ def draw(connections):
     nx.draw(g, with_labels=True, pos=locations, node_size=700)
     # plt.show()
     del draw
-    im.save("test.png", format="PNG")
+    # im.save("test.png", format="PNG")
     return im
 
 def draw_circle(im, x, y, rad, label, times_called, font, stretch):

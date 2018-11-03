@@ -37,7 +37,7 @@ def gh_link_entry(link):
 	granularity=get_filemap_tuple[1]
 	#granularity=5
 
-	
+
 
 	keys = list(dict.keys())
 	create_graph_ret_tuple=create_graph(keys, dict)
@@ -47,6 +47,8 @@ def gh_link_entry(link):
 	name_to_CD=create_graph_ret_tuple[2]
 
 	#call recursive func
+	if granularity is not None:
+		granularity = int(granularity)
 	if((granularity is not None) and granularity<=len(connections)):
 		connections=[(-1*get_function_weight(c,line_counts,name_to_CD),c) for c in connections]
 		heap=[]
@@ -68,8 +70,7 @@ def gh_link_entry(link):
 				if elems in list(reduced_connection_set.keys()):
 					new_cl.append(elems)
 			elem.set_call_list(new_cl)
-	cg.draw(connections)
-	return connections
+	return cg.draw(connections)
 
 
 def get_function_weight(single_cnct,lc,n2cd):#single connection, line_counts
