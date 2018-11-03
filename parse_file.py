@@ -34,7 +34,8 @@ class CallData:
 def gh_link_entry(link):
 	get_filemap_tuple=utils.get_filemap(link)
 	dict = get_filemap_tuple[0]
-	granularity=5
+	granularity=get_filemap_tuple[1]
+	#granularity=5
 
 	keys = list(dict.keys())
 	create_graph_ret_tuple=create_graph(keys, dict)
@@ -49,9 +50,22 @@ def gh_link_entry(link):
 		heap=[]
 		for elem in connections:
 			heappush(heap,elem)
-		print(heap)
-		connections=heap[0:granularity]
-		connections=[elem[1]for elem in connections]
+		#print(heap)
+		heap=heap[0:granularity]
+		heap=[elem[1]for elem in heap]
+
+		reduced_connection_set={}
+		for h in heap:
+			for cl in h.get_call_list():
+				reduced_connection_set[cl]=name_to_CD[cl]
+
+		connections=list(reduced_connection_set.values())#dict to list
+		for elem in connections:
+			new_cl=[]
+			for elems in elem.get_call_list():
+				if elems in list(reduced_connection_set.keys()):
+					new_cl.append(elems)
+			elem.set_call_list(new_cl)
 	cg.draw(connections)
 	return connections
 
