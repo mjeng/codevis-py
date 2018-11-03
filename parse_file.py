@@ -29,7 +29,7 @@ class CallData:
 
 
 def gh_link_entry(link):
-	dict = utils.get_filemap(link)
+	dict, option = utils.get_filemap(link)
 	keys = list(dict.keys())
 	connections=create_graph(keys, dict)
 	return cg.draw(connections)

@@ -1,14 +1,17 @@
-from flask import Flask, request, render_template, abort
+from flask import Flask, request, render_template, abort, send_file
 from requests_toolbelt import MultipartEncoder
 import json, io, os
 import parse_file, webex
+import parse_file
+from urllib.request import Request, urlopen
+from random import randint
 # from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("homepage.html")
+    return render_template("form.html")
 
 @app.route("/webex", methods=["POST"])
 def webex_request():
@@ -44,5 +47,18 @@ def webex_request():
         webex.sendPostRequest(os.environ["SPARK_MESSAGES_URL"], data)
     return "true"
 
+@app.route("/", methods=['POST'])
+def form_submission():
+    url = request.form['text']
+    try:
+        im = parse_file.gh_link_entry(url)
+    except AssertionError as e:
+        # ("Invalid input. Must be a valid Python Github URL and option (e.g. '-g=5).")
+        return render_template("form.html", error=e)
+    filename = "static/images/graph.png"
+    im.save(filename, format="PNG")
+    passed_path = "{0}?{1}".format(filename, randint(1, 1000000))
+    return render_template("form.html", path=passed_path)
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
