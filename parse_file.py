@@ -41,9 +41,10 @@ def create_graph(file_list,src_code_dict):
 		src_file=src_code_dict[src_key]
 		curr_src_split=src_file.split("\n")#essentially makes raw file into lines of a txt file
 		curr_funcs=file_functions[src_key]
-
+		#print(curr_funcs)
 		for func in curr_funcs:
 			curr_search="def "+func #just in case u call this function above the def
+			#print (curr_search)
 			curr_call_list=[]
 
 			#get to next def
@@ -53,7 +54,7 @@ def create_graph(file_list,src_code_dict):
 
 			while curr_src_split[0]!='' and curr_src_split !=[] and curr_src_split != [''] and curr_src_split[0][0]==" ": #check if space is first char to make sure actually under def
 				for funcs in all_functions:
-					funcs1=funcs+"()"
+					funcs1=funcs+"("
 					if funcs1 in curr_src_split[0]:#can always make it like curr_search later
 						curr_call_list.append(funcs)#potentially could call same func multiple times. Maybe in future implement counter, and make arrow thi
 				curr_src_split=curr_src_split[1:]
@@ -74,8 +75,10 @@ def get_functions(file_string):
 			ret.append(line[line.find(" ")+1:line.find("(")])
 	return ret
 
-testDict={"src1":'\nimport sys\n\nSTAT_START_COL = {"letter": \'F\', "number": 6}\n\ndef get_time():\n    TIME_FORMAT = "%Y-%m-%d"\n    get_time()\n    return strftime(TIME_FORMAT, gmtime())\n\ndef initialize_metadata():\n    METADATA["comics sent"] = METADATA["comics sent"].format(*letters)\n    STAT_START_COL\n    METADATA["MRCN"] = scrape_utils.most_recent_comic_num()\n\ndef run_setup():\n    # CREATE SHEETS].value = md_items[i][1]\n    reset()\n    initialize_metadata()\n\ndef reset():\n    wb = db_client.wb\n    get_time\n\n# NOTE: Doesn\'t run if not specifically running setup - file should only be run once.\nif __name__ == "__main__":\n    print("dummy")\n    reset()\n'}
-testStr=["src1"]
+
+testDict={"src1":'\nimport sys\n\nSTAT_START_COL = {"letter": \'F\', "number": 6}\n\ndef get_time():\n    TIME_FORMAT = "%Y-%m-%d"\n    get_time()\n    return strftime(TIME_FORMAT, gmtime())\n\ndef initialize_metadata():\n    METADATA["comics sent"] = METADATA["comics sent"].format(*letters)\n    STAT_START_COL\n    METADATA["MRCN"] = scrape_utils.most_recent_comic_num()\n\ndef run_setup():\n    # CREATE SHEETS].value = md_items[i][1]\n    reset()\n    initialize_metadata()\n\ndef reset():\n    wb = db_client.wb\n    get_time\n\n# NOTE: Doesn\'t run if not specifically running setup - file should only be run once.\nif __name__ == "__main__":\n    print("dummy")\n    reset()\n'
+,"src2":'from file1.py import get_time()\n\ndef file2func(arg1, arg2):\n    get_time()\n    pass\n\n\ndef another_func():\n    print()\n    size(variable)\n    while:\n   file2func(arg2, arg1)\n'}
+testStr=["src1","src2"]
 fml = create_graph(testStr,testDict)
 for elem in fml:
 	#print(elem.get_func_name()+" --> "+elem.get_call_list())
