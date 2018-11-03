@@ -35,12 +35,12 @@ def draw(connections):
             x_spacing[file] = [500]
         else:
             x_spacing[file] = list(range(100, im_size - 100, int( (im_size - 200) / (len(files[file]) - 1))))
-            x_spacing[file].append(im_size - 200)
+            x_spacing[file].append(im_size - 100)
     if (len(files) == 1):
         y_spacing = [500]
     else:
         y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / (len(file_list) - 1))))
-        y_spacing.append(im_size - 200)
+        y_spacing.append(im_size - 100)
 
     # draw file divisions and function names
     for i in range(len(y_spacing) - 1):
