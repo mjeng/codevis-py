@@ -36,7 +36,7 @@ def create_graph(file_list):
 		#print(src_file)
 		curr_src_split=src_file.split("\n")#essentially makes raw file into lines of a txt file
 		curr_funcs=file_functions[src_file]
-		print(curr_src_split)
+		#print(curr_src_split)
 		for func in curr_funcs:
 			curr_search="def "+func+":" #just in case u call this function above the def
 			curr_call_list=[]
@@ -60,5 +60,5 @@ def get_functions(file_string):
 	func_list = re.findall(r'def \w*:', file_string)
 	return [func_line[func_line.find(" ")+1:func_line.find(":")] for func_line in func_list]
 
-testStr=["def fuckMe:\n  sexy \ndef sexy:"]
+testStr=["def a:\n  b() \n  c()\nc()\ndef b:\ndef c:"]
 print(create_graph(testStr))
