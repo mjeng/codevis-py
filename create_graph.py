@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 import sys
 import parse_file
+import math
 
 '''
     input: connections = list of CallData objects
@@ -108,8 +109,25 @@ def draw_edge(im, x_1, y_1, x_2, y_2):
         im.line(((x_1, y_1), (x_2, y_2)), fill="black", width=2)
 
 def draw_arrow(im, x_1, y_1, x_2, y_2, r):
-    # alan here
-    return
+    if ((x_1 == x_2) and (y_1 == y_2)):
+        return
+    dist = ((x_1 - x_2)**2 + (y_1 - y_2)**2)**.5
+    x_a = x_1 - (r * (x_1 - x_2) / dist)
+    y_a = y_1 - (r * (y_1 - y_2) / dist)
+    t = math.tan(math.pi/6)
+    target = 250
+    x_a1 = ((x_a-x_2)*math.cos(t) - (y_a-y_2)*math.sin(t))
+    y_a1 = ((y_a-y_2)*math.cos(t) + (x_a-x_2)*math.sin(t))
+    d1 = x_a1**2 + y_a1**2
+    x_a2 = ((x_a-x_2)*math.cos(-t) - (y_a-y_2)*math.sin(-t))
+    y_a2 = ((y_a-y_2)*math.cos(-t) + (x_a-x_2)*math.sin(-t))
+    d2 = x_a2**2 + y_a2**2
+    x_l = x_a - x_a1*((target/d1)**0.5)
+    y_l = y_a - y_a1*((target/d1)**0.5)
+    x_r = x_a - x_a2*((target/d2)**0.5)
+    y_r = y_a - y_a2*((target/d2)**0.5)
+    im.line(((x_l, y_l), (x_a, y_a)), fill="red", width=2)
+    im.line(((x_r, y_r), (x_a, y_a)), fill="red", width=2)
 
 
 def main():
