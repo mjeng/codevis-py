@@ -9,7 +9,7 @@ testStr=["src1","src2"]
 
 #print(utils.get_filemap("https://github.com/mjeng/daily-xkcd"))
 fml = parse_file.gh_link_entry("https://github.com/mjeng/daily-xkcd")
-for elem in fml:
+#for elem in fml:
 	#print(elem.get_func_name()," --> ",elem.get_call_list())
 
-	print (elem.get_func_name(),'-->',elem.get_times_called(),'-->',elem.get_call_list())
+	#print (elem.get_func_name(),'-->',elem.get_times_called(),'-->',elem.get_call_list())
