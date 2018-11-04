@@ -42,7 +42,6 @@ def draw(connections):
     else:
         step = int(im_size / (len(file_list) + 1))
         y_spacing = list(range(step, im_size - 50, step))
-    print(y_spacing)
     # draw file divisions
     for i in range(1, len(y_spacing)):
         chunk_mid = (y_spacing[i - 1] + y_spacing[i]) / 2
@@ -84,7 +83,7 @@ def draw(connections):
     nx.draw(g, with_labels=True, pos=locations, node_size=700)
     # plt.show()
     del draw
-    im.save("test.png", format="PNG")
+    # im.save("test.png", format="PNG")
     return im
 
 def draw_circle(im, x, y, rad, label, times_called, font, stretch):
