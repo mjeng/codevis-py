@@ -35,9 +35,9 @@ def gh_link_entry(link):
 	get_filemap_tuple=utils.get_filemap(link)
 	dict = get_filemap_tuple[0]
 	granularity=get_filemap_tuple[1]
-	#granularity=5
+	#granularity=3
 
-	
+
 
 	keys = list(dict.keys())
 	create_graph_ret_tuple=create_graph(keys, dict)
@@ -48,16 +48,17 @@ def gh_link_entry(link):
 
 	#call recursive func
 	if((granularity is not None) and granularity<=len(connections)):
-		connections=[(-1*get_function_weight(c,line_counts,name_to_CD),c) for c in connections]
+		connections=[(-1*get_function_weight(c,line_counts,name_to_CD,"not_existing"),c) for c in connections]
 		heap=[]
 		for elem in connections:
 			heappush(heap,elem)
 		#print(heap)
 		heap=heap[0:granularity]
 		heap=[elem[1]for elem in heap]
-
+		print(heap[0].get_call_list())
 		reduced_connection_set={}
 		for h in heap:
+			reduced_connection_set[h.get_func_name()]=h
 			for cl in h.get_call_list():
 				reduced_connection_set[cl]=name_to_CD[cl]
 
@@ -67,16 +68,23 @@ def gh_link_entry(link):
 			for elems in elem.get_call_list():
 				if elems in list(reduced_connection_set.keys()):
 					new_cl.append(elems)
-			elem.set_call_list(new_cl)
+			elem.call_list=(rem_duplicate(new_cl))
 	cg.draw(connections)
 	return connections
 
+def rem_duplicate(duplicate):
+    final_list = []
+    for num in duplicate:
+        if num not in final_list:
+            final_list.append(num)
+    return final_list
 
-def get_function_weight(single_cnct,lc,n2cd):#single connection, line_counts
-	if len(single_cnct.get_call_list())==0:
+def get_function_weight(single_cnct,lc,n2cd,prev):#single connection, line_counts
+	rec_list=list(filter(lambda a: a != prev, single_cnct.get_call_list()))
+	if len(rec_list)==0:
 		return lc[single_cnct.get_func_name()]
 	else:
-		return lc[single_cnct.get_func_name()] + sum([get_function_weight(n2cd[x],lc,n2cd) for x in single_cnct.get_call_list()])
+		return lc[single_cnct.get_func_name()] + sum([get_function_weight(n2cd[x],lc,n2cd,x) for x in single_cnct.get_call_list()])
 
 ########
 # file_list --> list of file ID's
