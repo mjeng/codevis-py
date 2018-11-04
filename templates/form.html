@@ -7,7 +7,7 @@
   </head>
   <body>
     {% if error %}
-    	<script>alert("Invalid request. Please try again.")</script>
+    	<script>alert("Invalid input. Must be a valid Python Github URL and option (e.g. '-g=5).")</script>
     {% endif %}
     <form method="POST">
         <p>GitHub URL: <input name="gh_url"></p>

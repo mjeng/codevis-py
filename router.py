@@ -13,6 +13,25 @@ app = Flask(__name__)
 def index():
     return render_template("form.html")
 
+@app.route("/", methods=['POST'])
+def form_submission():
+    url = request.form['gh_url']
+    g = request.form['granularity']
+    if g:
+        req_str = "{0} -g={1}".format(url, g)
+    else:
+        req_str = url
+
+    try:
+        im = parse_file.gh_link_entry(req_str)
+    except AssertionError as e:
+        return render_template("form.html", error=e)
+        
+    filename = "static/images/graph.png"
+    im.save(filename, format="PNG")
+    passed_path = "{0}?{1}".format(filename, randint(1, 1000000))
+    return render_template("form.html", path=passed_path)
+
 @app.route("/webex", methods=["POST"])
 def webex_request():
     webhook = json.loads(request.data)
@@ -47,24 +66,6 @@ def webex_request():
         webex.sendPostRequest(os.environ["SPARK_MESSAGES_URL"], data)
     return "true"
 
-@app.route("/", methods=['POST'])
-def form_submission():
-    url = request.form['gh_url']
-    g = request.form['granularity']
-    if g:
-        req_str = "{0} -g={1}".format(url, g)
-    else:
-        req_str = url
-        
-    try:
-        im = parse_file.gh_link_entry(req_str)
-    except AssertionError as e:
-        # ("Invalid input. Must be a valid Python Github URL and option (e.g. '-g=5).")
-        return render_template("form.html", error=e)
-    filename = "static/images/graph.png"
-    im.save(filename, format="PNG")
-    passed_path = "{0}?{1}".format(filename, randint(1, 1000000))
-    return render_template("form.html", path=passed_path)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
