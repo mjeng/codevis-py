@@ -39,20 +39,17 @@ def draw(connections):
             x_spacing[file].append(im_size - 100)
     if (len(files) == 1):
         y_spacing = [im_size / 2]
-    else:   
-        y_spacing = list(range(100, im_size - 100, int( (im_size - 200) / (len(file_list) - 1))))
-        y_spacing.append(y_spacing[0])
-
-    # draw file divisions and function names
-    for i in range(len(y_spacing) - 1):
-        chunk_mid = (y_spacing[i] + y_spacing[i + 1]) / 2
+    else:
+        step = int(im_size / len(file_list))
+        y_spacing = list(range(int(step / 2), im_size, step))
+    # draw file divisions
+    for y in range(step, im_size, step):
         for j in range(im_size):
             if (j % 10 < 5):
-               draw.point((j, chunk_mid), fill="blue")
-    draw.text((im_size - 100, im_size - 100), file_list[-1], font=font, fill="black")
+               draw.point((j, y), fill="blue")
     # get locations of nodes in (x, y) coordinates spread out across image
     for i in range(len(nodes)):
-        stretch[connections[i].func_name] = len(connections[i].func_name) * 1.2
+        stretch[connections[i].func_name] = len(connections[i].func_name) * 1.4
         node_index = files[connections[i].src_file].index(connections[i].func_name)
         node_x = x_spacing[connections[i].src_file][node_index]
         node_y = y_spacing[file_list.index(connections[i].src_file)]
@@ -76,11 +73,10 @@ def draw(connections):
     for i in range(len(nodes)):
         node = locations[connections[i].func_name]
         draw_circle(draw, node[0], node[1], 30, connections[i].func_name, connections[i].times_called, font, stretch[connections[i].func_name])
-
-    for i in range(len(y_spacing) - 1):
-        chunk_mid = (y_spacing[i] + y_spacing[i + 1]) / 2
-        draw.text((im_size - 100, chunk_mid - 20), file_list[i], font=font, fill="black")
-    #draw.arc((20, 40, 100, 500), 90, 270, 'black')
+    # function names last
+    for i, y in enumerate(range(step, im_size + 5, step)):
+        draw.text((im_size - 100, y - 20), file_list[i], font=font, fill="black")
+    #draw.text((im_size - 100, im_size - 20), file_list[len(file_list) - 1], font=font, fill="black")
     nx.draw(g, with_labels=True, pos=locations, node_size=700)
     # plt.show()
     del draw

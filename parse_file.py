@@ -47,6 +47,8 @@ def gh_link_entry(link):
 	name_to_CD=create_graph_ret_tuple[2]
 
 	#call recursive func
+	if granularity is not None:
+		granularity = int(granularity)
 	if((granularity is not None) and granularity<=len(connections)):
 		connections=[(-1*get_function_weight(c,line_counts,name_to_CD,"not_existing"),c) for c in connections]
 		heap=[]
@@ -68,9 +70,8 @@ def gh_link_entry(link):
 			for elems in elem.get_call_list():
 				if elems in list(reduced_connection_set.keys()):
 					new_cl.append(elems)
-			elem.call_list=(rem_duplicate(new_cl))
-	cg.draw(connections)
-	return connections
+			elem.set_call_list(new_cl)
+	return cg.draw(connections)
 
 def rem_duplicate(duplicate):
     final_list = []

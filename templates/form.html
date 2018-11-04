@@ -7,10 +7,11 @@
   </head>
   <body>
     {% if error %}
-    	<script>alert({{ error }})</script>
+    	<script>alert("Invalid input. Must be a valid Python Github URL and option (e.g. '-g=5).")</script>
     {% endif %}
     <form method="POST">
-        <p>GitHub URL: <input name="text"></p>
+        <p>GitHub URL: <input name="gh_url"></p>
+        <p>granularity: <input type=number name="granularity"></p>
         <input type="submit">
     </form>
     <br>
