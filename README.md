@@ -1,2 +1,8 @@
-# ProgramDependencyBot
-Draws a depedency graph of all the src code files in a repo and interfaces with a cisco webex bot
+# Program Dependency Bot
+Draws a dependency graph of all the source code files in a Python repo.
+
+Interface available through website (https://codevis-py.herokuapp.com) and through a Cisco Webex bot.
+
+Example output (for https://github.com/mjeng/daily-xkcd/ with granularity=3):
+
+<img src=/static/images/ex.png width=75% height=auto>
