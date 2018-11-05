@@ -37,11 +37,9 @@ def draw(connections):
         else:
             x_spacing[file] = list(range(100, im_size - 100, int( (im_size - 200) / (len(files[file]) - 1))))
             x_spacing[file].append(im_size - 100)
-    if (len(files) == 1):
-        y_spacing = [im_size / 2]
-    else:
-        step = int(im_size / len(file_list))
-        y_spacing = list(range(int(step / 2), im_size, step))
+    # here we're listing the node-y coords, not the file divides
+    step = int(im_size / len(file_list))
+    y_spacing = list(range(int(step / 2), im_size, step))
     # draw file divisions
     for y in range(step, im_size, step):
         for j in range(im_size):
